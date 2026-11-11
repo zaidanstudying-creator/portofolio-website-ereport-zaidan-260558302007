@@ -1,0 +1,15 @@
+<x-layouts::civic title="Buat laporan">
+    <x-page-header eyebrow="Laporan baru" title="Sampaikan pengaduan" description="Ceritakan kondisi yang perlu ditangani. Isian bertanda wajib harus dilengkapi." />
+    <div class="form-layout">
+        <form method="POST" action="{{ route('laporans.store') }}" enctype="multipart/form-data" novalidate>
+            @csrf
+            @if($errors->any())<div class="form-error-summary" role="alert" tabindex="-1"><strong>Periksa kembali isian berikut:</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
+            <div class="field"><label for="judul">Judul pengaduan <span aria-hidden="true">*</span></label><input id="judul" name="judul" value="{{ old('judul') }}" required maxlength="255" aria-describedby="judul-hint @error('judul') judul-error @enderror"><p class="field-hint" id="judul-hint">Ringkas dan sebutkan masalah utamanya.</p>@error('judul')<span class="field-error" id="judul-error">{{ $message }}</span>@enderror</div>
+            <div class="field"><label for="detail">Detail pengaduan <span aria-hidden="true">*</span></label><textarea id="detail" name="detail" required maxlength="10000" aria-describedby="detail-hint @error('detail') detail-error @enderror">{{ old('detail') }}</textarea><p class="field-hint" id="detail-hint">Jelaskan lokasi, kondisi, dan dampaknya agar petugas mudah memahami.</p>@error('detail')<span class="field-error" id="detail-error">{{ $message }}</span>@enderror</div>
+            <div class="field"><label for="tanggal">Tanggal kejadian <span aria-hidden="true">*</span></label><input id="tanggal" name="tanggal" type="date" value="{{ old('tanggal') }}" max="{{ now()->toDateString() }}" required aria-describedby="tanggal-hint @error('tanggal') tanggal-error @enderror"><p class="field-hint" id="tanggal-hint">Pilih tanggal masalah terjadi.</p>@error('tanggal')<span class="field-error" id="tanggal-error">{{ $message }}</span>@enderror</div>
+            <div class="field"><label for="foto">Foto pengaduan <span>(opsional)</span></label><input id="foto" name="foto" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="foto-hint @error('foto') foto-error @enderror"><p class="field-hint" id="foto-hint">JPG, PNG, atau WebP. Maksimal 5 MB.</p><img id="photo-preview" class="report-photo" alt="Pratinjau foto yang dipilih" hidden>@error('foto')<span class="field-error" id="foto-error">{{ $message }}</span>@enderror</div>
+            <div class="form-actions"><button class="button" type="submit" data-submit-label="Kirim laporan">Kirim laporan</button><a class="text-link" href="{{ route('laporans.index') }}">Batalkan</a></div>
+        </form>
+        <aside class="form-aside"><p class="eyebrow">Sebelum mengirim</p><h2>Informasi yang membantu</h2><p>Tuliskan lokasi sejelas mungkin dan uraikan kondisi yang Anda lihat. Jangan sertakan data pribadi orang lain.</p><p>Setelah dikirim, laporan berstatus menunggu. Anda dapat mengubah atau menghapusnya selama belum diproses.</p></aside>
+    </div>
+</x-layouts::civic>

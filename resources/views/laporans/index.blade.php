@@ -1,0 +1,10 @@
+<x-layouts::civic title="Laporan saya">
+    <x-page-header eyebrow="Ruang warga" title="Laporan saya" description="Cari laporan dan ikuti setiap pembaruan status." >
+        <x-slot:action><a class="button" href="{{ route('laporans.create') }}">Buat pengaduan</a></x-slot:action>
+    </x-page-header>
+    <form class="filters" method="GET" action="{{ route('laporans.index') }}"><label class="sr-only" for="search-reports">Cari judul laporan</label><input id="search-reports" type="search" name="q" value="{{ request('q') }}" placeholder="Cari judul laporan"><label class="sr-only" for="filter-status">Filter status</label><select id="filter-status" name="status"><option value="">Semua status</option><option value="pending" @selected(request('status') === 'pending')>Menunggu</option><option value="proses" @selected(request('status') === 'proses')>Diproses</option><option value="selesai" @selected(request('status') === 'selesai')>Selesai</option></select><button class="button-secondary" type="submit">Terapkan</button></form>
+    @if($laporans->isEmpty())<div class="empty-state"><p>Belum ada laporan yang cocok.</p>@if(!request()->hasAny(['q', 'status']))<a class="text-link" href="{{ route('laporans.create') }}">Buat laporan pertama</a>@endif</div>@else
+        <div class="table-wrap"><table class="report-table"><thead><tr><th>Judul</th><th>Tanggal kejadian</th><th>Dikirim</th><th>Status</th><th>Aksi</th></tr></thead><tbody>@foreach($laporans as $laporan)<tr><td>{{ $laporan->judul }}</td><td>{{ $laporan->tanggal->format('d M Y') }}</td><td>{{ $laporan->created_at->format('d M Y') }}</td><td><span class="status status-{{ $laporan->status }}">{{ ucfirst($laporan->status === 'proses' ? 'Diproses' : ($laporan->status === 'pending' ? 'Menunggu' : 'Selesai')) }}</span></td><td><a class="text-link" href="{{ route('laporans.show', $laporan) }}">Detail</a></td></tr>@endforeach</tbody></table></div>
+        <div class="pagination">{{ $laporans->links() }}</div>
+    @endif
+</x-layouts::civic>

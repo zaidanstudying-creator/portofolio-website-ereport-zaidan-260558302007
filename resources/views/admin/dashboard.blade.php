@@ -1,0 +1,10 @@
+@php($total = $counts->sum())
+<x-layouts::civic title="Dashboard admin">
+    <x-page-header eyebrow="Administrasi" title="Ikhtisar pengaduan" description="Pantau laporan masuk dan tindak lanjut petugas." >
+        <x-slot:action><a class="button" href="{{ route('admin.laporans.index') }}">Kelola pengaduan</a></x-slot:action>
+    </x-page-header>
+    <section class="summary-layout"><div>
+        <div class="section-top"><h2 class="section-title">Laporan terbaru</h2><a class="text-link" href="{{ route('admin.laporans.index') }}">Semua pengaduan</a></div>
+        @if($recent->isEmpty())<div class="empty-state">Belum ada pengaduan yang masuk.</div>@else<div class="table-wrap"><table class="report-table"><thead><tr><th>Pengaduan</th><th>Pelapor</th><th>Diterima</th><th>Status</th><th>Aksi</th></tr></thead><tbody>@foreach($recent as $laporan)<tr><td>{{ $laporan->judul }}</td><td>{{ $laporan->pelapor->name }}</td><td>{{ $laporan->created_at->format('d M Y') }}</td><td><span class="status status-{{ $laporan->status }}">{{ ucfirst($laporan->status === 'proses' ? 'Diproses' : ($laporan->status === 'pending' ? 'Menunggu' : 'Selesai')) }}</span></td><td><a class="text-link" href="{{ route('admin.laporans.show', $laporan) }}">Tinjau</a></td></tr>@endforeach</tbody></table></div>@endif
+    </div><aside><div class="section-top"><h2 class="section-title">Ringkasan layanan</h2></div><div class="status-legend"><div class="status-line"><span>Total laporan</span><strong>{{ $total }}</strong></div><div class="status-line"><span class="status status-pending">Menunggu</span><strong>{{ $counts->get('pending', 0) }}</strong></div><div class="status-line"><span class="status status-proses">Diproses</span><strong>{{ $counts->get('proses', 0) }}</strong></div><div class="status-line"><span class="status status-selesai">Selesai</span><strong>{{ $counts->get('selesai', 0) }}</strong></div><div class="status-line"><span>Warga terdaftar</span><strong>{{ $totalUsers }}</strong></div></div><p class="quiet-note">Perbarui status secara berurutan: menunggu, diproses, lalu selesai.</p></aside></section>
+</x-layouts::civic>
